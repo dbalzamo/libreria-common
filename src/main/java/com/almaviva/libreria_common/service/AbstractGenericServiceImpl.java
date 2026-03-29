@@ -6,7 +6,9 @@ import com.almaviva.libreria_common.mapper.GenericMapper;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,16 @@ public abstract class AbstractGenericServiceImpl<T extends EntityBase, DTO, ID>
     @Override
     @Transactional(readOnly = true)
     public Page<DTO> getAllPaged(Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DTO> getAll(int page, int size, String orderBy, String direction) {
+        Sort sort = "desc".equalsIgnoreCase(direction)
+                ? Sort.by(orderBy).descending()
+                : Sort.by(orderBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         return repository.findAll(pageable).map(mapper::toDTO);
     }
 

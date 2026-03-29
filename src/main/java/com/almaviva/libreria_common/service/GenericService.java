@@ -7,6 +7,8 @@ public interface GenericService<DTO, ID>
 {
     Page<DTO> getAllPaged(Pageable pageable);
 
+    Page<DTO> getAll(int page, int size, String orderBy, String direction);
+
     DTO getById(ID id);
 
     DTO create(DTO dto);
